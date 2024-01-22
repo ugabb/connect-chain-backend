@@ -3,6 +3,17 @@ import { User, IUserRepository, UserCreate } from "../interface/user.interface";
 
 class UserRepository implements IUserRepository {
   async createUser(user: UserCreate): Promise<User> {
+    // verify if user already exist
+    const userExist = await prisma.user.findFirst({
+      where: {
+        username: user.username,
+      },
+    });
+
+    if (userExist) {
+      throw new Error("User already exist");
+    }
+
     //@ts-ignore
     const userCreated: User = await prisma.user.create({
       data: {
@@ -30,19 +41,29 @@ class UserRepository implements IUserRepository {
     return users ?? null;
   }
 
-  async getUserByUsername(username: string): Promise<User> {
+  async getUserByUsername(username: string): Promise<User | null> {
     const user = await prisma.user.findFirst({
       where: {
         username,
       },
     });
-    return user;
+    return user ?? null;
   }
 
   async updateUser(
     userId: string,
     updateFields: Partial<UserCreate>
   ): Promise<User> {
+    // verify if user already exist
+    const userExist = await prisma.user.findFirst({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!userExist) {
+      throw new Error("User does not exist");
+    }
     const updatedUser: User = await prisma.user.update({
       where: { id: userId },
       data: updateFields,
@@ -52,6 +73,16 @@ class UserRepository implements IUserRepository {
   }
 
   async deleteUser(username: string): Promise<User> {
+    // verify if user already exist
+    const userExist = await prisma.user.findFirst({
+      where: {
+        username: username,
+      },
+    });
+
+    if(!userExist){
+      throw new Error("User does not exist")
+    }
     const deletedUser = await prisma.user.delete({
       where: {
         username,

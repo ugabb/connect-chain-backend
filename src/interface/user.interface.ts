@@ -30,7 +30,7 @@ export type User = z.infer<typeof userSchema>;
 export interface IUserRepository {
   createUser(user: UserCreate): Promise<User>;
   listUsers(): Promise<User[]>;
-  getUserByUsername(username: string): Promise<User>
+  getUserByUsername(username: string): Promise<User | null>
   updateUser(userId: string, updateFields: Partial<UserCreate>): Promise<User>;
   deleteUser(username: string): Promise<User>;
 }
