@@ -28,7 +28,7 @@ model Link {
   id       String  @id @default(uuid())
   platform String
   url      String
-  User     User   @relation(fields: [userId], references: [id])
+  User     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId   String
 
   @@map("contacts")
