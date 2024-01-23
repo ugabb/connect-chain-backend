@@ -1,4 +1,9 @@
-import { FastifyInstance, fastify } from "fastify";
+import {
+  FastifyInstance,
+  FastifyReply,
+  FastifyRequest,
+  fastify,
+} from "fastify";
 import { userRoutes } from "./routes/user.route";
 import { linkRoutes } from "./routes/link.route";
 
@@ -13,6 +18,19 @@ const app: FastifyInstance = fastify();
 app.register(fjwt, {
   secret: "SUper-secret-code-that-should-be-in-dotenv-file",
 });
+
+export const authenticate = app.decorate(
+  "authenticate",
+  async (req: FastifyRequest, reply: FastifyReply) => {
+    const token = req.cookies.access_token;
+
+    if (!token) {
+      return reply.status(401).send({ message: "Authentication required" });
+    }
+    const decoded = req.jwt.verify<FastifyJWT["user"]>(token);
+    req.user = decoded;
+  }
+);
 
 app.addHook("preHandler", (req, res, next) => {
   req.jwt = app.jwt;
