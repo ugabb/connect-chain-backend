@@ -55,15 +55,7 @@ class UserRepository implements IUserRepository {
     updateFields: Partial<UserCreate>
   ): Promise<User> {
     // verify if user already exist
-    const userExist = await prisma.user.findFirst({
-      where: {
-        id: userId,
-      },
-    });
 
-    if (!userExist) {
-      throw new Error("User does not exist");
-    }
     const updatedUser: User = await prisma.user.update({
       where: { id: userId },
       data: updateFields,
@@ -80,8 +72,8 @@ class UserRepository implements IUserRepository {
       },
     });
 
-    if(!userExist){
-      throw new Error("User does not exist")
+    if (!userExist) {
+      throw new Error("User does not exist");
     }
     const deletedUser = await prisma.user.delete({
       where: {

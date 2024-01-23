@@ -1,3 +1,4 @@
+import { prisma } from "../database/prisma-client";
 import { User, UserCreate } from "../interface/user.interface";
 import { UserRepository } from "../repositories/user.repository";
 
@@ -37,6 +38,16 @@ class UserUseCase {
     userId: string,
     updateFields: Partial<UserCreate>
   ): Promise<User> {
+    const userExist = await prisma.user.findFirst({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!userExist) {
+      throw new Error("User does not exist");
+    }
+
     updateFields.updatedAt = new Date();
     const updatedUser = await this.userRepository.updateUser(
       userId,
