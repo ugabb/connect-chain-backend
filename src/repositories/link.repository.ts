@@ -1,5 +1,10 @@
 import { prisma } from "../database/prisma-client";
-import { ILinkRepository, Link, LinkCreate } from "../interface/link.interface";
+import {
+  ILinkRepository,
+  Link,
+  LinkCreate,
+  LinkUpdate,
+} from "../interface/link.interface";
 
 export class LinkRepository implements ILinkRepository {
   async createLink(link: LinkCreate): Promise<Link> {
@@ -23,7 +28,21 @@ export class LinkRepository implements ILinkRepository {
   }
   async updateLink(
     linkId: string,
-    updateFields: Partial<LinkCreate>
-  ): Promise<Link>;
-  async deleteLink(linkId: string): Promise<Link>;
+    updateFields: Partial<LinkUpdate>
+  ): Promise<Link> {
+    const updatedLink = await prisma.link.update({
+      where: {
+        id: linkId,
+      },
+      data: updateFields,
+    });
+    return updatedLink;
+  }
+
+  async deleteLink(linkId: string): Promise<Link> {
+    const deletedLink = await prisma.link.delete({
+      where: { id: linkId },
+    });
+    return deletedLink;
+  }
 }
