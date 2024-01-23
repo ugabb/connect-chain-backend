@@ -2,6 +2,8 @@ import { prisma } from "../database/prisma-client";
 import { User, UserCreate } from "../interface/user.interface";
 import { UserRepository } from "../repositories/user.repository";
 
+import { sha256 } from "crypto-hash";
+
 class UserUseCase {
   private userRepository: UserRepository;
 
@@ -11,7 +13,15 @@ class UserUseCase {
 
   async createUser(user: UserCreate): Promise<User> {
     //check if user exist
-    // const userExist = await this.userRepository.
+    const userExist = await prisma.user.findFirst({
+      where: {
+        username: user.username,
+      },
+    });
+
+    if (userExist) throw new Error("User Already Exist");
+
+    user.password = await sha256(user.password);
 
     const userCreated = await this.userRepository.createUser(user);
 
