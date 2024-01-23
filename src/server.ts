@@ -1,9 +1,11 @@
 import { FastifyInstance, fastify } from "fastify";
 import { userRoutes } from "./routes/user.route";
+import { linkRoutes } from "./routes/link.route";
 
 const app: FastifyInstance = fastify();
 
 app.register(userRoutes, { prefix: "/users" });
+app.register(linkRoutes, { prefix: "/links" });
 
 app.listen({ port: 8080 }, (err) => {
   if (err) {
