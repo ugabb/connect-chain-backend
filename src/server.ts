@@ -19,7 +19,7 @@ app.register(fjwt, {
   secret: "SUper-secret-code-that-should-be-in-dotenv-file",
 });
 
-export const authenticate = app.decorate(
+app.decorate(
   "authenticate",
   async (req: FastifyRequest, reply: FastifyReply) => {
     const token = req.cookies.access_token;
@@ -28,6 +28,7 @@ export const authenticate = app.decorate(
       return reply.status(401).send({ message: "Authentication required" });
     }
     const decoded = req.jwt.verify<FastifyJWT["user"]>(token);
+    console.log(decoded);
     req.user = decoded;
   }
 );

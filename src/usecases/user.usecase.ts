@@ -1,3 +1,4 @@
+
 import { prisma } from "../database/prisma-client";
 import { User, UserCreate, UserLogin } from "../interface/user.interface";
 import { UserRepository } from "../repositories/user.repository";
@@ -27,7 +28,7 @@ class UserUseCase {
     if (!passwordMatch) throw new Error("Password don't match");
 
     const payload = {
-      id: userExist.id,
+      userId: userExist.id,
       email: user.email,
       secure: true,
     };

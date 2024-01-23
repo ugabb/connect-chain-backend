@@ -5,8 +5,7 @@ import fastify, {
 } from "fastify";
 import { UserUseCase } from "../usecases/user.usecase";
 import { User, UserCreate, UserLogin } from "../interface/user.interface";
-import { authenticate } from "../server";
-import { FastifyJWT } from "@fastify/jwt";
+
 
 export async function userRoutes(fastify: FastifyInstance) {
   const userUseCase = new UserUseCase();
@@ -33,6 +32,22 @@ export async function userRoutes(fastify: FastifyInstance) {
     }
   );
 
+  fastify.delete(
+    "/logout",
+    { preHandler:  fastify.authenticate },
+    async (req: FastifyRequest, reply: FastifyReply) => {
+      try {
+        const hasToken = req.cookies.access_token;
+        if (!hasToken) throw new Error("Cookie does not exist");
+        reply.clearCookie("access_token");
+
+        return reply.send({ message: "Logout successful" });
+      } catch (error) {
+        return reply.send(error);
+      }
+    }
+  );
+
   fastify.post<{ Body: UserCreate }>("/sign-up", async (req, reply) => {
     const user = req.body;
     try {
@@ -46,7 +61,7 @@ export async function userRoutes(fastify: FastifyInstance) {
 
   fastify.get(
     "/",
-    { preHandler: async () => authenticate },
+    { preHandler: fastify.authenticate },
     async (req, reply) => {
       try {
         const response = await userUseCase.listUsers();
