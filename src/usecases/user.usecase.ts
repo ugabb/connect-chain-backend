@@ -11,7 +11,9 @@ class UserUseCase {
     this.userRepository = new UserRepository();
   }
 
-  async login(user: UserLogin): Promise<{ accessCode: string }> {
+  async login(
+    user: UserLogin
+  ): Promise<{ id: string; email: string; secure: boolean }> {
     // verify if user exist
     const userExist = await prisma.user.findFirst({
       where: {
@@ -21,8 +23,16 @@ class UserUseCase {
     if (!userExist) throw new Error("User not exist");
 
     // verify if password is matching
-    const passwordMatch = 
+    const passwordMatch = user.password === userExist.password;
+    if (!passwordMatch) throw new Error("Password don't match");
 
+    const payload = {
+      id: userExist.id,
+      email: user.email,
+      secure: true,
+    };
+
+    return payload;
   }
 
   async createUser(user: UserCreate): Promise<User> {
@@ -35,7 +45,7 @@ class UserUseCase {
 
     if (userExist) throw new Error("User Already Exist");
 
-    user.password = await sha256(user.password);
+    // user.password = await sha256(user.password);
 
     const userCreated = await this.userRepository.createUser(user);
 
