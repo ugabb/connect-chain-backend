@@ -1,4 +1,3 @@
-
 import { prisma } from "../database/prisma-client";
 import { User, UserCreate, UserLogin } from "../interface/user.interface";
 import { UserRepository } from "../repositories/user.repository";
@@ -24,7 +23,7 @@ class UserUseCase {
     if (!userExist) throw new Error("User not exist");
 
     // verify if password is matching
-    const passwordMatch = user.password === userExist.password;
+    const passwordMatch = user.password === userExist.password; // use bcrypt to hash password
     if (!passwordMatch) throw new Error("Password don't match");
 
     const payload = {
