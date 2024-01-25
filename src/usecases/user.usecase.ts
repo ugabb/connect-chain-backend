@@ -13,7 +13,7 @@ class UserUseCase {
 
   async login(
     user: UserLogin
-  ): Promise<{ userId: string; email: string; secure: boolean }> {
+  ): Promise<{ userId: string; username: string; secure: boolean }> {
     // verify if user exist
     const userExist = await prisma.user.findFirst({
       where: {
@@ -28,7 +28,7 @@ class UserUseCase {
 
     const payload = {
       userId: userExist.id,
-      email: user.email,
+      username: user.username,
       secure: true,
     };
 

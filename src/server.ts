@@ -15,13 +15,14 @@ import fCookie from "@fastify/cookie";
 
 const app: FastifyInstance = fastify();
 
-//cors
+
 app.register(cors, {
-  // hook: "preHandler",
-  // origin: "*",
-  // allowedHeaders: ["Origin", "Authorization"],
-  // methods: ["GET"],
+  origin: "http://localhost:3000",
+  credentials: true,
+  methods: ["GET", "POST"],
+  allowedHeaders: ["Content-Type","Authorization"],
 });
+
 // pre handler
 app.register(fjwt, {
   secret: "SUper-secret-code-that-should-be-in-dotenv-file",
