@@ -13,7 +13,7 @@ class UserUseCase {
 
   async login(
     user: UserLogin
-  ): Promise<{ id: string; email: string; secure: boolean }> {
+  ): Promise<{ userId: string; email: string; secure: boolean }> {
     // verify if user exist
     const userExist = await prisma.user.findFirst({
       where: {

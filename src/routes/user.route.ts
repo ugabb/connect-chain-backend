@@ -5,7 +5,7 @@ import fastify, {
 } from "fastify";
 import { UserUseCase } from "../usecases/user.usecase";
 import { User, UserCreate, UserLogin } from "../interface/user.interface";
-
+import { relative } from "path";
 
 export async function userRoutes(fastify: FastifyInstance) {
   const userUseCase = new UserUseCase();
@@ -25,7 +25,7 @@ export async function userRoutes(fastify: FastifyInstance) {
           secure: true,
         });
 
-        reply.send({ accessToken: token }).status(200);
+        reply.send({ username: user.username, id: payload.userId, accessToken: token }).status(200);
       } catch (error) {
         reply.send(error);
       }
@@ -34,7 +34,7 @@ export async function userRoutes(fastify: FastifyInstance) {
 
   fastify.delete(
     "/logout",
-    { preHandler:  fastify.authenticate },
+    { preHandler: fastify.authenticate },
     async (req: FastifyRequest, reply: FastifyReply) => {
       try {
         const hasToken = req.cookies.access_token;
@@ -59,18 +59,14 @@ export async function userRoutes(fastify: FastifyInstance) {
     }
   });
 
-  fastify.get(
-    "/",
-    { preHandler: fastify.authenticate },
-    async (req, reply) => {
-      try {
-        const response = await userUseCase.listUsers();
-        reply.send(response).status(200);
-      } catch (error) {
-        reply.send(error);
-      }
+  fastify.get("/", { preHandler: fastify.authenticate }, async (req, reply) => {
+    try {
+      const response = await userUseCase.listUsers();
+      reply.send(response).status(200);
+    } catch (error) {
+      reply.send(error);
     }
-  );
+  });
 
   fastify.get<{ Params: { username: string } }>(
     "/:username",

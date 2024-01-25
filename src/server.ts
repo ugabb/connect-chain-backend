@@ -6,6 +6,7 @@ import {
 } from "fastify";
 import { userRoutes } from "./routes/user.route";
 import { linkRoutes } from "./routes/link.route";
+import cors from "@fastify/cors"; // Import cors directly
 
 // jwt
 import fjwt, { FastifyJWT } from "@fastify/jwt";
@@ -14,6 +15,13 @@ import fCookie from "@fastify/cookie";
 
 const app: FastifyInstance = fastify();
 
+//cors
+app.register(cors, {
+  // hook: "preHandler",
+  // origin: "*",
+  // allowedHeaders: ["Origin", "Authorization"],
+  // methods: ["GET"],
+});
 // pre handler
 app.register(fjwt, {
   secret: "SUper-secret-code-that-should-be-in-dotenv-file",
@@ -27,9 +35,14 @@ app.decorate(
     if (!token) {
       return reply.status(401).send({ message: "Authentication required" });
     }
-    const decoded = req.jwt.verify<FastifyJWT["user"]>(token);
-    console.log(decoded);
-    req.user = decoded;
+
+    try {
+      const decoded = req.jwt.verify<FastifyJWT["user"]>(token);
+      console.log(decoded);
+      req.user = decoded;
+    } catch (error) {
+      return reply.status(401).send({ message: "Invalid token" });
+    }
   }
 );
 
