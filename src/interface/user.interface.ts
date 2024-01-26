@@ -13,6 +13,14 @@ export const userSchema = z.object({
   updatedAt: z.date(),
 });
 
+export const userResponseSchema = z.object({
+  id: z.string().uuid().nullable(),
+  name: z.string(),
+  email: z.string().email(),
+  username: z.string(),
+  profileImage: z.string().url().nullable(),
+});
+
 export const userCreateSchema = z.object({
   id: z.string().uuid().nullable(),
   name: z.string(),
@@ -33,6 +41,7 @@ export const userCredentialsLogin = z.object({
 export type UserCreate = z.infer<typeof userCreateSchema>;
 export type User = z.infer<typeof userSchema>;
 export type UserLogin = z.infer<typeof userCredentialsLogin>;
+export type UserResponse = z.infer<typeof userResponseSchema>;
 
 export interface IUserRepository {
   createUser(user: UserCreate): Promise<User>;
