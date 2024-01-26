@@ -15,9 +15,10 @@ export async function userRoutes(fastify: FastifyInstance) {
     async (req: FastifyRequest, reply: FastifyReply) => {
       const user = req.body;
       try {
-        const payload = await userUseCase.login(user);
+        const loginData = await userUseCase.login(user);
+        console.log(loginData)
 
-        const token = req.jwt.sign(payload);
+        const token = req.jwt.sign(loginData);
 
         reply.setCookie("access_token", token, {
           path: "/",
@@ -25,7 +26,7 @@ export async function userRoutes(fastify: FastifyInstance) {
           secure: true,
         });
 
-        reply.send({ username: user.username, id: payload.userId, accessToken: token }).status(200);
+        reply.send({ user: loginData.userResponse, accessToken: token }).status(200);
       } catch (error) {
         reply.send(error);
       }

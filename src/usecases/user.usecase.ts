@@ -1,5 +1,10 @@
 import { prisma } from "../database/prisma-client";
-import { User, UserCreate, UserLogin } from "../interface/user.interface";
+import {
+  User,
+  UserCreate,
+  UserLogin,
+  UserResponse,
+} from "../interface/user.interface";
 import { UserRepository } from "../repositories/user.repository";
 
 import { sha256 } from "crypto-hash";
@@ -11,9 +16,10 @@ class UserUseCase {
     this.userRepository = new UserRepository();
   }
 
-  async login(
-    user: UserLogin
-  ): Promise<{ userId: string; username: string; secure: boolean }> {
+  async login(user: UserLogin): Promise<{
+    userResponse: UserResponse;
+    payload: { userId: string; username: string; secure: boolean };
+  }> {
     // verify if user exist
     const userExist = await prisma.user.findFirst({
       where: {
@@ -21,6 +27,14 @@ class UserUseCase {
       },
     });
     if (!userExist) throw new Error("User not exist");
+
+    const userResponse: UserResponse = {
+      username: userExist.username,
+      email: userExist.email,
+      id: userExist.id,
+      name: userExist.name,
+      profileImage: userExist.profileImage,
+    };
 
     // verify if password is matching
     const passwordMatch = user.password === userExist.password; // use bcrypt to hash password
@@ -32,7 +46,7 @@ class UserUseCase {
       secure: true,
     };
 
-    return payload;
+    return { userResponse, payload };
   }
 
   async createUser(user: UserCreate): Promise<User> {
