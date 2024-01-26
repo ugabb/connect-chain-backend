@@ -15,12 +15,11 @@ import fCookie from "@fastify/cookie";
 
 const app: FastifyInstance = fastify();
 
-
 app.register(cors, {
   origin: "http://localhost:3000",
   credentials: true,
-  methods: ["GET", "POST"],
-  allowedHeaders: ["Content-Type","Authorization"],
+  methods: ["GET", "POST", "DELETE", "PUT"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 });
 
 // pre handler
