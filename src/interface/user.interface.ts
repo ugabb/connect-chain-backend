@@ -3,7 +3,8 @@ import { linkSchema } from "./link.interface";
 
 export const userSchema = z.object({
   id: z.string().uuid().nullable(),
-  name: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
   email: z.string().email(),
   username: z.string(),
   password: z.string().min(6),
@@ -15,7 +16,8 @@ export const userSchema = z.object({
 
 export const userResponseSchema = z.object({
   id: z.string().uuid().nullable(),
-  name: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
   email: z.string().email(),
   username: z.string(),
   profileImage: z.string().url().nullable(),
@@ -23,7 +25,8 @@ export const userResponseSchema = z.object({
 
 export const userCreateSchema = z.object({
   id: z.string().uuid().nullable(),
-  name: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
   email: z.string().email(),
   username: z.string(),
   password: z.string().min(6),
