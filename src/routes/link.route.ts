@@ -16,6 +16,25 @@ export async function linkRoutes(fastify: FastifyInstance) {
     }
   });
 
+  fastify.post<{ Body: LinkCreate[]; Params: { username: string } }>(
+    "/save-all/user/:username",
+    async (req, reply) => {
+      const links = req.body;
+      const { username } = req.params;
+      try {
+        const linksSaved = await linkUseCase.saveAllLinksByUsername(
+          username,
+          links
+        );
+        console.log("salvou");
+        console.log(linksSaved);
+        return reply.send(linksSaved).status(201);
+      } catch (error) {
+        return reply.send({ message: error });
+      }
+    }
+  );
+
   fastify.get<{ Params: { username: string } }>(
     "/:username",
     async (req, reply) => {
@@ -61,4 +80,12 @@ export async function linkRoutes(fastify: FastifyInstance) {
       }
     }
   );
+  fastify.delete("/", async (req, reply) => {
+    try {
+      await linkUseCase.deleteAllLinks();
+      return reply.send("All links deleted");
+    } catch (error) {
+      return reply.send(error);
+    }
+  });
 }
