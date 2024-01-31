@@ -31,6 +31,7 @@ export interface ILinkRepository {
   getAllLinksByUsername(username: string): Promise<Link[]>;
   updateLink(linkId: string, updateFields: Partial<LinkCreate>): Promise<Link>;
   deleteLink(linkId: string): Promise<Link>;
+  deleteAllLinks(): Promise<void>;
 }
 
 export { linkSchema };

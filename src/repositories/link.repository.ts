@@ -17,6 +17,7 @@ export class LinkRepository implements ILinkRepository {
     });
     return createdLink;
   }
+
   async getAllLinksByUsername(username: string): Promise<Link[]> {
     const links = await prisma.link.findMany({
       where: {
@@ -44,5 +45,9 @@ export class LinkRepository implements ILinkRepository {
       where: { id: linkId },
     });
     return deletedLink;
+  }
+
+  async deleteAllLinks(): Promise<void> {
+    await prisma.link.deleteMany();
   }
 }
