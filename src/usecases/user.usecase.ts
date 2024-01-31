@@ -59,7 +59,14 @@ class UserUseCase {
 
     if (userExist) throw new Error("User Already Exist");
 
+    // encrypt password
     // user.password = await sha256(user.password);
+
+    // first capital letter
+    user.firstName =
+      user.firstName.charAt(0).toUpperCase() + user.firstName.slice(1);
+    user.lastName =
+      user.lastName.charAt(0).toUpperCase() + user.lastName.slice(1);
 
     const userCreated = await this.userRepository.createUser(user);
 

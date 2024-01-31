@@ -17,7 +17,8 @@ class UserRepository implements IUserRepository {
     //@ts-ignore
     const userCreated: User = await prisma.user.create({
       data: {
-        name: user.name,
+        firstName: user.firstName,
+        lastName: user.lastName,
         username: user.username,
         email: user.email,
         password: user.password,
