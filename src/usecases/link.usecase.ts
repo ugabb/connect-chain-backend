@@ -29,18 +29,46 @@ export class LinkUseCase {
     username: string,
     links: LinkCreate[]
   ): Promise<Link[]> {
-    const userExist = await this.userRepository.getUserByUsername(username);
-    if (!userExist) throw new Error("User doesn't exist");
+    try {
+      // Verify if user exists
+      const userExist = await this.userRepository.getUserByUsername(username);
+      if (!userExist) {
+        throw new Error("User doesn't exist");
+      }
 
-    links.forEach((link) => {
-      console.log("saving link:", link.platform);
-      link.userId = userExist.id;
-      this.linkRepository.createLink(link);
-    });
-    const linksSaved = await this.linkRepository.getAllLinksByUsername(
-      userExist.username
-    );
-    return linksSaved;
+      const updatedLinks: Link[] = [];
+
+      // For each link, check if already exists; if it does, update; if not, create
+      for (let link of links) {
+        try {
+          const existingLink =
+            await this.linkRepository.getLinkByPlatformAndUser(
+              link.platform,
+              link.userId
+            );
+
+          if (existingLink?.id) {
+            // Update existing link
+            const updatedLink = await this.linkRepository.updateLink(
+              existingLink.id,
+              link
+            );
+            updatedLinks.push(updatedLink);
+          } else {
+            // Create new link
+            const createdLink = await this.linkRepository.createLink(link);
+            updatedLinks.push(createdLink);
+          }
+        } catch (error) {
+          console.error("Error processing link:", error);
+        }
+      }
+
+      return updatedLinks;
+    } catch (error) {
+      console.error("Error processing links for user:", error);
+      throw error; // Re-throw the error for external handling
+    }
   }
 
   async getAllLinksByUsername(username: string): Promise<Link[]> {

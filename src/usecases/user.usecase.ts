@@ -32,7 +32,8 @@ class UserUseCase {
       username: userExist.username,
       email: userExist.email,
       id: userExist.id,
-      name: userExist.name,
+      firstName: userExist.firstName,
+      lastName: userExist.lastName,
       profileImage: userExist.profileImage,
     };
 

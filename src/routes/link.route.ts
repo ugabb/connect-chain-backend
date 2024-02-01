@@ -26,8 +26,8 @@ export async function linkRoutes(fastify: FastifyInstance) {
           username,
           links
         );
-        console.log("salvou");
-        console.log(linksSaved);
+        if (linksSaved.length <= 0)
+          throw new Error("Error while saving Link(s)");
         return reply.send(linksSaved).status(201);
       } catch (error) {
         return reply.send({ message: error });

@@ -7,6 +7,18 @@ import {
 } from "../interface/link.interface";
 
 export class LinkRepository implements ILinkRepository {
+  async getLinkByPlatformAndUser(
+    platform: string,
+    userId: string
+  ): Promise<Link | null> {
+    const link = await prisma.link.findFirst({
+      where: { userId, platform },
+    });
+    console.log("link", link);
+    if (!link) console.error("Link doesn't exist");
+    return link;
+  }
+
   async createLink(link: LinkCreate): Promise<Link> {
     const createdLink = await prisma.link.create({
       data: {

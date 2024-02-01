@@ -29,6 +29,7 @@ export type LinkUpdate = z.infer<typeof linkUpdate>;
 export interface ILinkRepository {
   createLink(link: LinkCreate): Promise<Link>;
   getAllLinksByUsername(username: string): Promise<Link[]>;
+  getLinkByPlatformAndUser(platform: string, userId: string): Promise<Link | null>;
   updateLink(linkId: string, updateFields: Partial<LinkCreate>): Promise<Link>;
   deleteLink(linkId: string): Promise<Link>;
   deleteAllLinks(): Promise<void>;
