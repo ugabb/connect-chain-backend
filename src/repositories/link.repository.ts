@@ -24,6 +24,8 @@ export class LinkRepository implements ILinkRepository {
       data: {
         platform: link.platform,
         url: link.url,
+        color: link.color,
+        iconName: link.iconName,
         userId: link.userId,
       },
     });

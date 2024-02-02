@@ -6,9 +6,15 @@ export async function linkRoutes(fastify: FastifyInstance) {
   const linkUseCase = new LinkUseCase();
 
   fastify.post<{ Body: LinkCreate }>("/", async (req, reply) => {
-    const { platform, url, userId } = req.body;
+    const { platform, url, userId, color, iconName } = req.body;
     try {
-      const response = await linkUseCase.createLink({ platform, url, userId });
+      const response = await linkUseCase.createLink({
+        platform,
+        url,
+        userId,
+        color,
+        iconName,
+      });
 
       return reply.send(response).status(201);
     } catch (error) {
